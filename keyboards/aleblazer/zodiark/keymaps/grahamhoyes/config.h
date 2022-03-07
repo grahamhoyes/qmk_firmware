@@ -24,9 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_TERM 200
 
 #undef RGBLIGHT_ANIMATIONS
-#define RGBLIGHT_EFFECT_CHRISTMAS
 #define RGBLIGHT_EFFECT_RAINBOW_MOOD
-#define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-#define RGBLIGHT_EFFECT_STATIC_GRADIENT
 
 #define ENCODER_DIRECTION_FLIP
+
+#define SPLIT_WPM_ENABLE

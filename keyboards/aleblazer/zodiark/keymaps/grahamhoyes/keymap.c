@@ -33,9 +33,6 @@ enum layers {
 enum custom_keycodes {
     KC_PRVWD = SAFE_RANGE,
     KC_NXTWD,
-    KC_LSTRT,
-    KC_LEND,
-    KC_DLINE,
     // Ctrl by default, CMD in mac mode
     KC_CTRL_CMD,
 };
@@ -94,15 +91,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT     , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
         KC_ESC  , KC_A        , KC_O      , KC_E       , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
         KC_LSFT , KC_QUOTE    , KC_Q      , KC_J       , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
-        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP   , KC_RIGHT , KC_RCTRL
+        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP       , KC_RIGHT , KC_RCTRL
     ),
 
     [_MAC] = LAYOUT(
-        _______ , _______  , _______    , _______     , _______      , _______ ,                                                       _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______               , _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______               , _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ , _______ , _______ , TD(TD_SPOTLIGHT_BASE) , _______ , _______ , _______ , _______ , _______ , _______ ,
-        KC_LGUI , KC_LCTRL , KC_MAC_CUT , KC_MAC_COPY , KC_MAC_PASTE ,           _______ , _______ , _______ , _______               ,           _______ , _______ , _______ , _______ , KC_RGUI
+        _______ , _______  , _______    , _______     , _______      , _______ ,                                                             _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , _______       ,                     _______               , _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , LGUI(KC_LEFT) ,                     LGUI(KC_RIGHT)        , _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , _______       , _______ , _______ , TD(TD_SPOTLIGHT_BASE) , _______ , _______ , _______ , _______ , _______ , _______ ,
+        KC_LGUI , KC_LCTRL , KC_MAC_CUT , KC_MAC_COPY , KC_MAC_PASTE ,           _______       , _______ , _______ , _______               ,           _______ , _______ , _______ , _______ , KC_RGUI
     ),
 
     [_NUMPAD] = LAYOUT(
@@ -137,17 +134,17 @@ static uint8_t get_os_mode(void) {
 
 #ifdef OLED_ENABLE
 
-static void render_logo(void) {
-    static const char PROGMEM qmk_logo[] = {
-        0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
-        0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
-        0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,0
-    };
+// static void render_logo(void) {
+//     static const char PROGMEM qmk_logo[] = {
+//         0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
+//         0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
+//         0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,0
+//     };
 
-    oled_write_P(qmk_logo, false);
-}
+//     oled_write_P(qmk_logo, false);
+// }
 
-static void print_status_narrow(void) {
+static void print_oled_left(void) {
     // Print current mode
     oled_write_P(PSTR("\n\n"), false);
     oled_write_ln_P(PSTR("MODE"), false);
@@ -162,8 +159,9 @@ static void print_status_narrow(void) {
         default:
             oled_write_ln_P(PSTR("Undef"), false);
     }
-    oled_write_P(PSTR("\n\n"), false);
+
     // Print current layer
+    oled_write_P(PSTR("\n\n"), false);
     oled_write_ln_P(PSTR("LAYER"), false);
     switch (get_highest_layer(layer_state)) {
         case _MAC:
@@ -182,23 +180,40 @@ static void print_status_narrow(void) {
         default:
             oled_write_ln_P(PSTR("Undef"), false);
     }
-    // oled_write_P(PSTR("\n\n"), false);
-    // led_t led_usb_state = host_keyboard_led_state();
-    // oled_write_ln_P(PSTR("CPSLK"), led_usb_state.caps_lock);
+
+    // Print WPM
+    oled_write_P(PSTR("\n\n"), false);
+    oled_write_ln_P(PSTR("WPM"), false);
+    char wpm_buffer[4] = { 0 };
+    itoa(get_current_wpm(), wpm_buffer, 10);
+    oled_write_ln(wpm_buffer, false);
+}
+
+static void print_oled_right(void) {
+    // Print WPM
+    oled_write_P(PSTR("\n\n"), false);
+    oled_write_ln_P(PSTR("   WPM"), false);
+    oled_write_P(PSTR("   "), false);
+    char wpm_buffer[4] = { 0 };
+    itoa(get_current_wpm(), wpm_buffer, 10);
+    oled_write_ln(wpm_buffer, false);
 }
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
         return OLED_ROTATION_90;
+    } else {
+        return OLED_ROTATION_270;
     }
-    return rotation;
 }
 
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
-        print_status_narrow();
+        // print_status_narrow();
+        print_oled_left();
     } else {
-        render_logo();
+        // render_logo();
+        print_oled_right();
     }
     return false;
 }
@@ -215,7 +230,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
                 unregister_code(code);
             }
-            break;
+            return false;
         }
         case KC_PRVWD:
             if (record->event.pressed) {
@@ -235,7 +250,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     unregister_code(KC_LEFT);
                 }
             }
-            break;
+            return false;
         case KC_NXTWD:
              if (record->event.pressed) {
                 if (keymap_config.swap_lctl_lgui) {
@@ -254,25 +269,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     unregister_code(KC_RIGHT);
                 }
             }
-            break;
-        case KC_LSTRT:
-            if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                     //CMD-arrow on Mac, but we have CTL and GUI swapped
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_LEFT);
-                } else {
-                    register_code(KC_HOME);
-                }
-            } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_LEFT);
-                } else {
-                    unregister_code(KC_HOME);
-                }
-            }
-            break;
+            return false;
     }
     return true;
 }
