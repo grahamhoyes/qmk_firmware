@@ -27,18 +27,17 @@ enum layers {
     _MAC,
     _NUMPAD,
     _SYMBOL,
+    _META,
 };
 
 enum custom_keycodes {
-    KC_BASE = SAFE_RANGE,
-    KC_MAC,
-    KC_LOWER,
-    KC_RAISE,
-    KC_PRVWD,
+    KC_PRVWD = SAFE_RANGE,
     KC_NXTWD,
     KC_LSTRT,
     KC_LEND,
     KC_DLINE,
+    // Ctrl by default, CMD in mac mode
+    KC_CTRL_CMD,
 };
 
 typedef enum {
@@ -91,11 +90,11 @@ const key_override_t **key_overrides = (const key_override_t *[]) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_BASE] = LAYOUT(
-        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR             , KC_LPRN           , KC_EQUAL           ,                                                  KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
-        KC_TAB  , KC_SCOLON   , KC_COMMA  , LT(_SYMBOL, KC_DOT) , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
-        KC_ESC  , KC_A        , KC_O      , LT(_SYMBOL, KC_E)   , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
-        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J                , KC_K              , KC_X               , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
-        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY          , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP   , KC_RIGHT , KC_RCTRL
+        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR    , KC_LPRN           , KC_EQUAL           ,                                                  KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
+        KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT     , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
+        KC_ESC  , KC_A        , KC_O      , KC_E       , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
+        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J       , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
+        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP   , KC_RIGHT , KC_RCTRL
     ),
 
     [_MAC] = LAYOUT(
@@ -122,7 +121,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______ , _______ , _______ , _______ , _______ ,           _______ , _______ , _______ , _______ ,           _______ , _______  , _______ , _______   , _______
     ),
 
+    [_META] = LAYOUT(
+        _______ , _______     , _______ , _______ , _______ , _______ ,                                         _______   , KC_F10  , KC_F11  , KC_F12  , _______ , _______ ,
+        _______ , _______     , _______ , _______ , _______ , _______ , _______ ,                     _______ , KC_PGUP   , KC_F7   , KC_F8   , KC_F9   , _______ , _______ ,
+        _______ , KC_CTRL_CMD , KC_LSFT , KC_LALT , _______ , _______ , _______ ,                     _______ , KC_PGDOWN , KC_F4   , KC_F5   , KC_F6   , _______ , _______ ,
+        _______ , _______     , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______   , KC_F1   , KC_F2   , KC_F3   , _______ , _______ ,
+        _______ , _______     , _______ , _______ , _______ ,           _______ , _______ , _______ , _______ ,             _______ , _______ , _______ , _______ , _______
+    ),
+
 };
+
+static uint8_t get_os_mode(void) {
+    return get_highest_layer(default_layer_state);
+}
+
 #ifdef OLED_ENABLE
 
 static void render_logo(void) {
@@ -140,7 +152,7 @@ static void print_status_narrow(void) {
     oled_write_P(PSTR("\n\n"), false);
     oled_write_ln_P(PSTR("MODE"), false);
 
-    switch (get_highest_layer(default_layer_state)) {
+    switch (get_os_mode()) {
         case _BASE:
             oled_write_ln_P(PSTR("Base"), false);
             break;
@@ -163,6 +175,9 @@ static void print_status_narrow(void) {
             break;
         case _SYMBOL:
             oled_write_ln_P(PSTR("Symbol"), false);
+            break;
+        case _META:
+            oled_write_ln_P(PSTR("Meta"), false);
             break;
         default:
             oled_write_ln_P(PSTR("Undef"), false);
@@ -192,16 +207,16 @@ bool oled_task_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KC_BASE:
+        case KC_CTRL_CMD: {
+            // Control in normal mode, cmd in mac mode
+            uint16_t code = get_os_mode() == _MAC ? KC_LGUI : KC_LCTL;
             if (record->event.pressed) {
-                set_single_persistent_default_layer(_BASE);
+                register_code(code);
+            } else {
+                unregister_code(code);
             }
-            return false;
-        case KC_MAC:
-            if (record->event.pressed) {
-                set_single_persistent_default_layer(_MAC);
-            }
-            return false;
+            break;
+        }
         case KC_PRVWD:
             if (record->event.pressed) {
                 if (keymap_config.swap_lctl_lgui) {
