@@ -87,11 +87,11 @@ const key_override_t **key_overrides = (const key_override_t *[]) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_BASE] = LAYOUT(
-        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR    , KC_LPRN           , KC_EQUAL           ,                                                  KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
-        KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT     , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
-        KC_ESC  , KC_A        , KC_O      , KC_E       , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
-        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J       , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
-        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP       , KC_RIGHT , KC_RCTRL
+        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR           , KC_LPRN           , KC_EQUAL           ,                                                  KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
+        KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT            , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
+        KC_ESC  , KC_A        , KC_O      , LT(_SYMBOL, KC_E) , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
+        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J              , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
+        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY        , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP       , KC_RIGHT , KC_RCTRL
     ),
 
     [_MAC] = LAYOUT(
@@ -111,11 +111,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_SYMBOL] = LAYOUT(
-        _______ , _______ , _______ , _______ , _______ , _______ ,                                         _______ , _______ , _______  , _______ , _______   , _______ ,
-        _______ , _______ , _______ , _______ , _______ , _______ , _______ ,                     _______ , KC_PERC , KC_DLR  , KC_TILD  , KC_CIRC , KC_BSLASH , _______ ,
-        _______ , _______ , _______ , _______ , _______ , _______ , _______ ,                     _______ , KC_AMPR , KC_HASH , KC_GRAVE , KC_AT   , KC_PIPE   , _______ ,
-        _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______  , _______ , _______   , _______ ,
-        _______ , _______ , _______ , _______ , _______ ,           _______ , _______ , _______ , _______ ,           _______ , _______  , _______ , _______   , _______
+        _______ , _______ , _______ , _______ , _______ , _______ ,                                         _______ , _______  , _______ , _______ , _______ , _______ ,
+        _______ , _______ , _______ , _______ , _______ , _______ , _______ ,                     _______ , _______ , KC_TILD  , KC_DLR  , KC_CIRC , KC_PERC , _______ ,
+        _______ , _______ , _______ , _______ , _______ , _______ , _______ ,                     _______ , _______ , KC_GRAVE , KC_HASH , KC_AT   , KC_AMPR , _______ ,
+        _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______ , _______  , _______ , _______ , _______ , _______ ,
+        _______ , _______ , _______ , _______ , _______ ,           _______ , _______ , _______ , _______ ,           _______  , _______ , _______ , _______ , _______
     ),
 
     [_META] = LAYOUT(
