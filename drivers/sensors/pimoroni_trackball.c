@@ -87,6 +87,8 @@ __attribute__((weak)) void pimoroni_trackball_device_init(void) {
     pimoroni_trackball_set_rgbw(0x00, 0x00, 0x00, 0x00);
 }
 
+#define cutoff 2
+
 int16_t pimoroni_trackball_get_offsets(uint8_t negative_dir, uint8_t positive_dir, uint8_t scale) {
     uint8_t offset     = 0;
     bool    isnegative = false;
@@ -96,7 +98,16 @@ int16_t pimoroni_trackball_get_offsets(uint8_t negative_dir, uint8_t positive_di
     } else {
         offset = positive_dir - negative_dir;
     }
+
+    // uint16_t magnitude;
+
+    // if (offset < (1 << cutoff)) {
+    //     magnitude = (scale * precision * offset) >> 7;
+    // } else {
+    //     magnitude = (scale * precision * offset * offset ) >> (7 + cutoff);
+    // }
     uint16_t magnitude = (scale * offset * offset * precision) >> 7;
+    // uint16_t magnitude = (scale * offset * precision) >> 7;
     return isnegative ? -(int16_t)(magnitude) : (int16_t)(magnitude);
 }
 

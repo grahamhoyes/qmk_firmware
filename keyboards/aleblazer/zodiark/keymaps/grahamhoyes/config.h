@@ -16,6 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
+#define EE_HANDS
+
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
+
 #ifdef OLED_ENABLE
   #define OLED_DISPLAY_128X64
   #define OLED_TIMEOUT 400000
@@ -24,8 +29,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_TERM 200
 
 #undef RGBLIGHT_ANIMATIONS
-#define RGBLIGHT_EFFECT_RAINBOW_MOOD
+// #define RGBLIGHT_EFFECT_RAINBOW_MOOD
 
 #define ENCODER_DIRECTION_FLIP
 
+#define SPLIT_LAYER_STATE_ENABLE
 #define SPLIT_WPM_ENABLE
+
+#define POINTING_DEVICE_ROTATION_90
+
+// #define SPLIT_POINTING_ENABLE
+// #define POINTING_DEVICE_LEFT

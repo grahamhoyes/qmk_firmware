@@ -74,6 +74,8 @@ const key_override_t **key_overrides = (const key_override_t *[]) {
     NULL
 };
 
+static bool is_scrolling = false;
+
 /*
 [] = LAYOUT(
     _______ , _______ , _______ , _______ , _______ , _______ ,                                         _______ , _______ , _______ , _______ , _______ , _______ ,
@@ -197,10 +199,20 @@ static void print_oled_right(void) {
     char wpm_buffer[4] = { 0 };
     itoa(get_current_wpm(), wpm_buffer, 10);
     oled_write_ln(wpm_buffer, false);
+
+    // Print Scrolling
+    oled_write_P(PSTR("\n\n"), false);
+    oled_write_ln_P(PSTR("   SCRL"), false);
+    if (is_scrolling) {
+        oled_write_ln_P(PSTR("   y"), false);
+    } else {
+        oled_write_ln_P(PSTR("   n"), false);
+    }
+    
 }
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    if (is_keyboard_master()) {
+    if (is_keyboard_left()) {
         return OLED_ROTATION_90;
     } else {
         return OLED_ROTATION_270;
@@ -208,7 +220,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 bool oled_task_user(void) {
-    if (is_keyboard_master()) {
+    if (is_keyboard_left()) {
         // print_status_narrow();
         print_oled_left();
     } else {
@@ -393,3 +405,46 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_SUPER_MAC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_super_mac_finished, dance_super_mac_reset),
     [TD_SPOTLIGHT_BASE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_spotlight_base_finished, dance_spotlight_base_reset),
 };
+
+void set_scrolling(bool scroll) {
+    is_scrolling = scroll;
+
+    if (is_scrolling) {
+        pointing_device_set_cpi(1000);
+    } else {
+        pointing_device_set_cpi(25000);
+    }
+}
+
+void keyboard_post_init_user(void) {
+    set_scrolling(true);
+}
+
+static uint16_t trackball_debounce_timer;
+static bool trackball_debounce = false;
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    if (mouse_report.buttons) {
+        if (trackball_debounce) {
+            if (timer_elapsed(trackball_debounce_timer) > 500) {
+                trackball_debounce = false;
+            }
+        }
+
+        if (!trackball_debounce) {
+            set_scrolling(!is_scrolling);
+            trackball_debounce = true;
+            trackball_debounce_timer = timer_read();
+        }
+           
+    }
+    mouse_report.buttons = 0;
+
+    if (is_scrolling) {
+        mouse_report.h = mouse_report.x;
+        mouse_report.v = mouse_report.y;
+        mouse_report.x = mouse_report.y = 0;
+    }
+    
+    return mouse_report;
+}
