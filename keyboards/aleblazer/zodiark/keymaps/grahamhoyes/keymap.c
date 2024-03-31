@@ -75,7 +75,9 @@ const key_override_t **key_overrides = (const key_override_t *[]) {
     NULL
 };
 
+#ifdef POINTING_DEVICE_ENABLE
 static bool is_scrolling = false;
+#endif
 
 /*
 [] = LAYOUT(
@@ -223,6 +225,7 @@ static void print_oled_right(void) {
     itoa(get_current_wpm(), wpm_buffer, 10);
     oled_write_ln(wpm_buffer, false);
 
+    #ifdef POINTING_DEVICE_ENABLE
     // Print Scrolling
     oled_write_P(PSTR("\n\n"), false);
     oled_write_ln_P(PSTR("   SCRL"), false);
@@ -231,6 +234,7 @@ static void print_oled_right(void) {
     } else {
         oled_write_ln_P(PSTR("   n"), false);
     }
+    #endif
     
 }
 
@@ -430,6 +434,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_SPOTLIGHT_SWITCH] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_spotlight_switch_finished, dance_spotlight_switch_reset),
 };
 
+#ifdef POINTING_DEVICE_ENABLE
 void set_scrolling(bool scroll) {
     is_scrolling = scroll;
 
@@ -438,10 +443,6 @@ void set_scrolling(bool scroll) {
     } else {
         pointing_device_set_cpi(25000);
     }
-}
-
-void keyboard_post_init_user(void) {
-    set_scrolling(true);
 }
 
 static uint16_t trackball_debounce_timer;
@@ -471,4 +472,11 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     }
     
     return mouse_report;
+}
+#endif
+
+void keyboard_post_init_user(void) {
+    #ifdef POINTING_DEVICE_ENABLE
+    set_scrolling(true);
+    #endif
 }
