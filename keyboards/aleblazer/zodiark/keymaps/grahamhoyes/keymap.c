@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Spencer Deven <splitlogicdesign@gmail.com>
+Copyright 2024 Graham Hoyes
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum layers {
     _BASE,
     _MAC,
+    _GAME,
     _NUMPAD,
     _SYMBOL,
     _META,
@@ -38,10 +39,10 @@ enum custom_keycodes {
 };
 
 typedef enum {
-    // Super when tapped, switch to mac mode when double tapped
-    TD_SUPER_MAC,
-    // Spotlight search when tapped, switch to base mode when double tapped
-    TD_SPOTLIGHT_BASE,
+    // Super when tapped, switch between modes when double tapped
+    TD_SUPER_SWITCH,
+    // Spotlight search when tapped, switch between modes when double tapped
+    TD_SPOTLIGHT_SWITCH,
 } td_codes_t;
 
 // Key overrides for programmer dvorak shifted numbers
@@ -88,21 +89,33 @@ static bool is_scrolling = false;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
+    /** Base layers, intended to be set as default */
+
     [_BASE] = LAYOUT(
-        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR           , KC_LPRN           , KC_EQUAL           ,                                                  KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
-        KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT            , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS          , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
-        KC_ESC  , KC_A        , KC_O      , LT(_SYMBOL, KC_E) , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END           , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
-        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J              , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_MAC) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
-        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY        , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE         ,           KC_LEFT , KC_DOWN , KC_UP       , KC_RIGHT , KC_RCTRL
+        KC_AMPR , KC_LBRACKET , KC_LCBR   , KC_RCBR           , KC_LPRN           , KC_EQUAL           ,                                                     KC_ASTR , KC_RPRN , KC_PLUS , KC_RBRACKET , KC_EXLM  , KC_GRAVE ,
+        KC_TAB  , KC_SCOLON   , KC_COMMA  , KC_DOT            , KC_P              , KC_Y               , KC_AT   ,                     KC_BSLS             , KC_F    , KC_G    , KC_C    , KC_R        , KC_L     , KC_SLASH ,
+        KC_ESC  , KC_A        , KC_O      , LT(_SYMBOL, KC_E) , LT(_NUMPAD, KC_U) , LT(_SYMBOL, KC_I)  , KC_HOME ,                     KC_END              , KC_D    , KC_H    , KC_T    , KC_N        , KC_S     , KC_MINUS ,
+        KC_LSFT , KC_QUOTE    , KC_Q      , KC_J              , KC_K              , LT(_META, KC_X)    , KC_LALT , KC_MUTE , RGB_TOG , TD(TD_SUPER_SWITCH) , KC_B    , KC_M    , KC_W    , KC_V        , KC_Z     , KC_RSFT  ,
+        KC_LCTL , KC_MEH      , KC_PC_CUT , KC_PC_COPY        , KC_PC_PASTE       ,                      KC_BSPC , KC_DEL  , KC_ENT  , KC_SPACE            ,           KC_LEFT , KC_DOWN , KC_UP       , KC_RIGHT , KC_RCTRL
     ),
 
     [_MAC] = LAYOUT(
-        _______ , _______  , _______    , _______     , _______      , _______ ,                                                       _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______               , _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______               , _______ , _______ , _______ , _______ , _______ , _______ ,
-        _______ , _______  , _______    , _______     , _______      , _______ , _______ , _______ , _______ , TD(TD_SPOTLIGHT_BASE) , _______ , _______ , _______ , _______ , _______ , _______ ,
-        KC_LGUI , KC_LCTRL , KC_MAC_CUT , KC_MAC_COPY , KC_MAC_PASTE ,           _______ , _______ , _______ , _______               ,           _______ , _______ , _______ , _______ , KC_RGUI
+        _______ , _______  , _______    , _______     , _______      , _______ ,                                                         _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______                 , _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , _______ ,                     _______                 , _______ , _______ , _______ , _______ , _______ , _______ ,
+        _______ , _______  , _______    , _______     , _______      , _______ , _______ , _______ , _______ , TD(TD_SPOTLIGHT_SWITCH) , _______ , _______ , _______ , _______ , _______ , _______ ,
+        KC_LGUI , KC_LCTRL , KC_MAC_CUT , KC_MAC_COPY , KC_MAC_PASTE ,           _______ , _______ , _______ , _______                 ,           _______ , _______ , _______ , _______ , KC_RGUI
     ),
+
+    [_GAME] = LAYOUT(
+        _______ , KC_1    , KC_2    , KC_3    , KC_4    , KC_5    ,                                                      _______ , KC_0    , KC_MINUS , KC_PLUS , _______ , _______ ,
+        KC_TAB  , KC_TAB  , KC_Q    , KC_W    , KC_E    , KC_R    , KC_T     ,                     _______             , _______ , KC_7    , KC_8     , KC_9    , _______ , _______ ,
+        KC_ESC  , KC_ESC  , KC_A    , KC_S    , KC_D    , KC_F    , KC_G     ,                     _______             , _______ , KC_4    , KC_5     , KC_6    , _______ , _______ ,
+        KC_LSFT , KC_LSFT , KC_Z    , KC_X    , KC_C    , KC_V    , KC_LALT  , KC_MUTE , RGB_TOG , TD(TD_SUPER_SWITCH) , _______ , KC_1    , KC_2     , KC_3    , _______ , _______ ,
+        KC_LCTL , KC_LCTL , KC_I    , KC_B    , KC_LALT ,           KC_SPACE , KC_ENT  , KC_ENT  , _______             , _______ , _______ , _______  , _______ , _______
+    ),
+
+    /** Overlay layers*/
 
     [_NUMPAD] = LAYOUT(
         _______ , _______ , _______ , _______ , _______ , _______ ,                                         _______   , _______ , KC_KP_PLUS , KC_KP_ASTERISK , KC_KP_MINUS , _______     ,
@@ -130,21 +143,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+static uint8_t get_next_base_layer(void) {
+    switch (get_highest_layer(default_layer_state)) {
+        case _BASE:
+            return _MAC;
+        case _MAC:
+            return _GAME;
+        case _GAME:
+            return _BASE;
+        default:
+            return _BASE;
+    }
+}
+
 static uint8_t get_os_mode(void) {
     return get_highest_layer(default_layer_state);
 }
 
 #ifdef OLED_ENABLE
 
-// static void render_logo(void) {
-//     static const char PROGMEM qmk_logo[] = {
-//         0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
-//         0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
-//         0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,0
-//     };
-
-//     oled_write_P(qmk_logo, false);
-// }
 
 static void print_oled_left(void) {
     // Print current mode
@@ -158,6 +175,9 @@ static void print_oled_left(void) {
         case _MAC:
             oled_write_ln_P(PSTR("Mac"), false);
             break;
+        case _GAME:
+            oled_write_ln_P(PSTR("Game"), false);
+            break;
         default:
             oled_write_ln_P(PSTR("Undef"), false);
     }
@@ -169,6 +189,9 @@ static void print_oled_left(void) {
         case _MAC:
         case _BASE:
             oled_write_ln_P(PSTR("Base"), false);
+            break;
+        case _GAME:
+            oled_write_ln_P(PSTR("Game"), false);
             break;
         case _NUMPAD:
             oled_write_ln_P(PSTR("Numpad"), false);
@@ -325,7 +348,7 @@ typedef struct {
 
 td_state_t dance_step(qk_tap_dance_state_t *state) {
     if (state->count == 1) {
-        if (state ->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
         else return TD_SINGLE_HOLD;
     } else if (state->count == 2) {
         if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
@@ -338,11 +361,11 @@ td_state_t dance_step(qk_tap_dance_state_t *state) {
 // Should be the same size as td_codes_t
 td_tap_t dance_states[3];
 
-// Super Mac: Single tap or hold for super, double tap to activate mac mode
-void dance_super_mac_finished(qk_tap_dance_state_t *state, void *user_data) {
-    dance_states[TD_SUPER_MAC].state = dance_step(state);
+// Super Switch: Single tap or hold for super, double tap to activate mac mode
+void dance_super_switch_finished(qk_tap_dance_state_t *state, void *user_data) {
+    dance_states[TD_SUPER_SWITCH].state = dance_step(state);
 
-    switch (dance_states[TD_SUPER_MAC].state) {
+    switch (dance_states[TD_SUPER_SWITCH].state) {
         case TD_SINGLE_TAP:
         case TD_SINGLE_HOLD:
             register_code16(KC_LGUI);
@@ -352,15 +375,16 @@ void dance_super_mac_finished(qk_tap_dance_state_t *state, void *user_data) {
             register_code16(KC_LGUI);
             break;
         case TD_DOUBLE_TAP:
-            set_single_persistent_default_layer(_MAC);
+            // set_single_persistent_default_layer(_MAC);
+            set_single_persistent_default_layer(get_next_base_layer());
             break;
         default:
             break;
     }
 }
 
-void dance_super_mac_reset(qk_tap_dance_state_t *state, void *user_data) {
-    switch (dance_states[TD_SUPER_MAC].state) {
+void dance_super_switch_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch (dance_states[TD_SUPER_SWITCH].state) {
         case TD_SINGLE_TAP:
         case TD_SINGLE_HOLD:
         case TD_DOUBLE_SINGLE_TAP:
@@ -370,27 +394,27 @@ void dance_super_mac_reset(qk_tap_dance_state_t *state, void *user_data) {
             break;
     }
 
-    dance_states[TD_SUPER_MAC].state = TD_NONE;
+    dance_states[TD_SUPER_SWITCH].state = TD_NONE;
 }
 
 // Spotlight Base: Single tap for spotlight search, double tap to activate base mode
-void dance_spotlight_base_finished(qk_tap_dance_state_t *state, void *user_data) {
-    dance_states[TD_SPOTLIGHT_BASE].state = dance_step(state);
+void dance_spotlight_switch_finished(qk_tap_dance_state_t *state, void *user_data) {
+    dance_states[TD_SPOTLIGHT_SWITCH].state = dance_step(state);
 
-    switch(dance_states[TD_SPOTLIGHT_BASE].state) {
+    switch(dance_states[TD_SPOTLIGHT_SWITCH].state) {
         case TD_SINGLE_TAP:
             register_code16(LGUI(KC_SPACE));
             break;
         case TD_DOUBLE_TAP:
-            set_single_persistent_default_layer(_BASE);
+            set_single_persistent_default_layer(get_next_base_layer());
             break;
         default:
             break;
     }
 }
 
-void dance_spotlight_base_reset(qk_tap_dance_state_t *state, void *user_data) {
-    switch(dance_states[TD_SPOTLIGHT_BASE].state) {
+void dance_spotlight_switch_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch(dance_states[TD_SPOTLIGHT_SWITCH].state) {
         case TD_SINGLE_TAP:
             unregister_code16(LGUI(KC_SPACE));
             break;
@@ -398,12 +422,12 @@ void dance_spotlight_base_reset(qk_tap_dance_state_t *state, void *user_data) {
             break;
     }
 
-    dance_states[TD_SPOTLIGHT_BASE].state = TD_NONE;
+    dance_states[TD_SPOTLIGHT_SWITCH].state = TD_NONE;
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_SUPER_MAC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_super_mac_finished, dance_super_mac_reset),
-    [TD_SPOTLIGHT_BASE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_spotlight_base_finished, dance_spotlight_base_reset),
+    [TD_SUPER_SWITCH] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_super_switch_finished, dance_super_switch_reset),
+    [TD_SPOTLIGHT_SWITCH] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_spotlight_switch_finished, dance_spotlight_switch_reset),
 };
 
 void set_scrolling(bool scroll) {
