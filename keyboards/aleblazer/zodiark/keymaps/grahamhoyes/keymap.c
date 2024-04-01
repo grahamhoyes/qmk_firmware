@@ -112,7 +112,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_GAME] = LAYOUT(
         _______ , KC_1    , KC_2    , KC_3    , KC_4    , KC_5    ,                                                      _______ , KC_0    , KC_MINUS , KC_PLUS , _______ , _______ ,
         KC_TAB  , KC_TAB  , KC_Q    , KC_W    , KC_E    , KC_R    , KC_T     ,                     _______             , _______ , KC_7    , KC_8     , KC_9    , _______ , _______ ,
-        KC_ESC  , KC_ESC  , KC_A    , KC_S    , KC_D    , KC_F    , KC_G     ,                     _______             , _______ , KC_4    , KC_5     , KC_6    , _______ , _______ ,
+        KC_ESC  , KC_ESC  , KC_A    , KC_S    , KC_D    , KC_F    , KC_M     ,                     _______             , _______ , KC_4    , KC_5     , KC_6    , _______ , _______ ,
         KC_LSFT , KC_LSFT , KC_Z    , KC_X    , KC_C    , KC_V    , KC_LALT  , KC_MUTE , RGB_TOG , TD(TD_SUPER_SWITCH) , _______ , KC_1    , KC_2     , KC_3    , _______ , _______ ,
         KC_LCTL , KC_LCTL , KC_I    , KC_B    , KC_LALT ,           KC_SPACE , KC_ENT  , KC_ENT  , _______             , _______ , _______ , _______  , _______ , _______
     ),
