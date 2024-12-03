@@ -48,9 +48,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // RGB Matrix Config
 #ifdef RGB_MATRIX_ENABLE
-#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 175
      /* RGB Defines */
 #define WS2812_DI_PIN GP2
+// You may need to limit the max brightness if you haven't done the diode bypass mod to the Waveshare RP2040-LCD
+// #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 100
 #define RGB_MATRIX_LED_COUNT 88
 #define RGB_MATRIX_SPLIT { 44,44 }
      /* Enable Framebuffer and keypress effects */
